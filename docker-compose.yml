@@ -1,0 +1,19 @@
+services:
+  postgresql:
+    image: postgres:18-trixie
+    container_name: postgresql
+    restart: unless-stopped
+    ports:
+      - "${POSTGRESQL_PORT}:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRESQL_DB_NAME}
+      POSTGRES_USER: ${POSTGRESQL_DB_USER}
+      POSTGRES_PASSWORD: ${POSTGRESQL_DB_PASSWORD}
+      TZ: Asia/Tokyo
+    volumes:
+      - ./postgresql/data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
